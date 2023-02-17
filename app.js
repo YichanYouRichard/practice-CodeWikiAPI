@@ -63,16 +63,34 @@ app
     });
   });
 
-app.route("/articles/:articleId").get(function (req, res) {
-  const articleId = req.params.articleId;
-  Article.findOne({ _id: articleId }, function (err, foundArticle) {
-    if (!err) {
-      res.send(foundArticle);
-    } else {
-      res.send(err);
-    }
-  });
-});
+app
+  .route("/articles/:articleId")
+  .get(function (req, res) {
+    const articleId = req.params.articleId;
+    Article.findOne({ _id: articleId }, function (err, foundArticle) {
+      if (!err) {
+        res.send(foundArticle);
+      } else {
+        res.send(err);
+      }
+    });
+  })
+  .put(function (req, res) {
+    const articleId = req.params.articleId;
+    Article.updateOne(
+      { _id: articleId },
+      { title: req.body.title, content: req.body.content },
+      function (err, foundArticle) {
+        if (!err) {
+          res.send(foundArticle);
+        } else {
+          res.send(err);
+        }
+      }
+    );
+  })
+  .patch()
+  .delete();
 
 app.get("/articles/:articleId");
 

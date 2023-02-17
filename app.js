@@ -89,7 +89,16 @@ app
       }
     );
   })
-  .patch()
+  .patch(function (req, res) {
+    const articleId = req.params.articleId;
+    Article.updateOne({ _id: articleId }, { $set: req.body }, function (err) {
+      if (!err) {
+        res.send("Successfully updated article.");
+      } else {
+        res.send(err);
+      } 
+    });
+  })
   .delete();
 
 app.get("/articles/:articleId");

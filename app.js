@@ -96,10 +96,19 @@ app
         res.send("Successfully updated article.");
       } else {
         res.send(err);
-      } 
+      }
     });
   })
-  .delete();
+  .delete(function (req, res) {
+    const articleId = req.params.articleId;
+    Article.deleteOne({ _id: articleId }, function (err) {
+      if (!err) {
+        res.send("Successfully deleted the item");
+      } else {
+        res.send(err);
+      }
+    });
+  });
 
 app.get("/articles/:articleId");
 

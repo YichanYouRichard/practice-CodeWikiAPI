@@ -26,45 +26,58 @@ const articleSchema = {
 
 const Article = mongoose.model("Article", articleSchema);
 
+app
+  .route("/articles")
+  .get(function (req, res) {
+    Article.find({}, function (err, foundArticles) {
+      if (!err) {
+        res.send(foundArticles);
+      } else {
+        res.send(err);
+      }
+    });
+  })
+  .post(function (req, res) {
+    const title = req.body.title;
+    const content = req.body.content;
+
+    const newArticle = new Article({
+      title: title,
+      content: content,
+    });
+    newArticle.save(function (err) {
+      if (!err) {
+        res.send("Successfully added a new article.");
+      } else {
+        res.send(err);
+      }
+    });
+  })
+  .delete(function (req, res) {
+    Article.deleteMany({}, function (err) {
+      if (!err) {
+        res.send("Successfully deleted all the datas!");
+      } else {
+        res.send(err);
+      }
+    });
+  });
+
+app.route("/articles/:articleId").get(function (req, res) {
+  const articleId = req.params.articleId;
+  Article.findOne({ _id: articleId }, function (err, foundArticle) {
+    if (!err) {
+      res.send(foundArticle);
+    } else {
+      res.send(err);
+    }
+  });
+});
+
+app.get("/articles/:articleId");
+
 app.get("/", function (req, res) {
   res.send("Hello World! Server has created!");
-});
-
-app.get("/articles", function (req, res) {
-  Article.find({}, function (err, foundArticles) {
-    if (!err) {
-      res.send(foundArticles);
-    } else {
-      res.send(err);
-    }
-  });
-});
-
-app.post("/articles", function (req, res) {
-  const title = req.body.title;
-  const content = req.body.content;
-
-  const newArticle = new Article({
-    title: title,
-    content: content,
-  });
-  article.save(function (err) {
-    if (!err) {
-      res.send("Successfully added a new article.");
-    } else {
-      res.send(err);
-    }
-  });
-});
-
-app.delete("/articles", function (req, res) {
-  Article.deleteMany({}, function (err) {
-    if (!err) {
-      res.send("Successfully deleted all the datas!");
-    } else {
-      res.send(err);
-    }
-  });
 });
 
 app.listen(3000, function () {
